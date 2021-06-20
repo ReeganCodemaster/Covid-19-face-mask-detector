@@ -15,4 +15,6 @@ The first model is provided by opencv todetct faces in an image, the second I bu
 
 ## The mask detction dataset
 
-I have compiled my own dataset and I have included a link to it in my google drive
+I have compiled my own dataset and I have included a link to it in my google drive:
+
+https://drive.google.com/drive/folders/1F6iXIym5IFHLo6whTw_QhcZbo1Zt44W5?usp=sharing
