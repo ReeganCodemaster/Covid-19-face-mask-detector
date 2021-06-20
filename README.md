@@ -1,6 +1,6 @@
 # Covid-19-face-mask-detector
 
-This repository contains two models  and two programs.
+This repository contains two models , three programs and a dataset.
 
 ## The models
 
@@ -13,6 +13,8 @@ The first model is provided by opencv todetct faces in an image, the second I bu
 ## The second program
 `camtest.py` is built to test which camera id belongs to which camera for convenience
 
+## The third program
+The third program is a jupyter notebook that I created in Google colab to train the mask detection on the datset that is included
 ## The mask detction dataset
 
 I have compiled my own dataset and I have included a link to it in my google drive:
