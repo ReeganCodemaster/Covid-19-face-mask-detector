@@ -12,3 +12,7 @@ The first model is provided by opencv todetct faces in an image, the second I bu
 
 ## The second program
 `camtest.py` is built to test which camera id belongs to which camera for convenience
+
+## The mask detction dataset
+
+I have compiled my own dataset and I have included a link to it in my google drive
