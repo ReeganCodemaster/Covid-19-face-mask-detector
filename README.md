@@ -1,6 +1,6 @@
 # Covid-19-face-mask-detector
 
-This repository contains two models  adn two programs.
+This repository contains two models  and two programs.
 
 ## The models
 
