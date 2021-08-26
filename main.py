@@ -5,6 +5,12 @@ import imutils
 import time
 import cv2
 import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.layers import Dense, MaxPooling2D, Flatten, Dropout, Conv2D, GlobalAveragePooling2D
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 #use this latter for bounding box
 resMap = {
@@ -17,28 +23,53 @@ colorMap = {
         1 : (0,0,255)
     }
 
+
 def prepImg(pth):
     return cv2.resize(pth,(224,224)).reshape(1,224,224,3)/255.0
 
-#defining prototext and caffemodel paths
-caffeModel = "Face detector/res10_300x300_ssd_iter_140000_fp16.caffemodel"
-prototextPath = "Face detector/deploy.prototxt.txt"
+def create_model():
+    mob = MobileNetV2(
+    input_shape = (224,224,3),
+    include_top = False,
+    weights = 'imagenet',
+    )
+
+    mob.trainable = False
+    model = Sequential()
+    model.add(mob)
+    model.add(GlobalAveragePooling2D())
+    model.add(Dense(500,activation='relu'))
+    model.add(Dense(300,activation='relu'))
+    model.add(Dense(2,activation='softmax'))
+
+    model.compile(optimizer=Adam(),loss='categorical_crossentropy',metrics=['acc'])
+
+    return model
+
+
+#defining model paths
+caffe_model = "Face detector/res10_300x300_ssd_iter_140000_fp16.caffemodel"
+prototext_path = "Face detector/deploy.prototxt.txt"
+mask_path = 'mask_model\mask_model.h5'
 
 #Load Models
 print("Loading models...................\n")
 
 #Loading mask classification model
-print("Loading model 1..................\n")
-model = tf.keras.models.load_model('Model')
+print("[INFO] Loading model 1...\n")
+model = create_model()
+model.load_weights(mask_path)
 
 #Loading face detction model
-print("Loading model 2..................\n")
-net = cv2.dnn.readNetFromCaffe(prototextPath,caffeModel)
+print("[INFO] Loading model 2...\n")
+net = cv2.dnn.readNetFromCaffe(prototext_path,caffe_model)
 
 # initialize the video stream to get the video frames
+vs_num = input('[INPUT] Enter your video streaming devices unique id')
 print("[INFO] starting video stream...")
-vs = VideoStream(src=1).start()
+vs = VideoStream(src=int(vs_num)).start()
 time.sleep(2.0)
+
 
 #loop the frames from the  VideoStream
 while True :
@@ -78,6 +109,7 @@ while True :
         img = frame[startX:endX, startY:endY]
         pred = model.predict(prepImg(img))
         pred = np.argmax(pred)
+
 
         #draw the bounding box of the face along with the associated text
         cv2.rectangle(frame,(startX,startY),(endX,endY),
